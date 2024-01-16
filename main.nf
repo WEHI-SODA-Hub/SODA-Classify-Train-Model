@@ -65,16 +65,16 @@ workDir           : ${workflow.workDir}
 
 def helpMessage() {
     log.info"""
-  Usage:  nextflow run main.nf \
-  				--run_name <name> \
-  				--input <preprocessed.csv> \
-				--label_file <cell_type_labels.csv> \
-				--output_path <dir>
-				--preprocess_scheme logp1,poly
-				--balance_schemes ENN,TOMEK,ADASYN,SMOTEENN,SMOTE
-				--bayescv_iterations 1,5,10,20
-				--classifier Xgboost
-				--options_toml <options.toml>
+  Usage:  nextflow run main.nf
+  		--run_name <name>
+  		--input <preprocessed.csv>
+		--label_file <cell_type_labels.csv>
+		--output_path <dir>
+		--preprocess_scheme logp1,poly
+		--balance_schemes ENN,TOMEK,ADASYN,SMOTEENN,SMOTE
+		--bayescv_iterations 1,5,10,20
+		--classifier Xgboost
+		--options_toml <options.toml>
 
   Required Arguments:
   --run_name			Run name used to label output files.
@@ -101,27 +101,34 @@ workflow {
 // Show help message if --help is run or if any required params are not 
 // provided at runtime
 
-	if ( params.help || params.input == false ){   
+	if ( params.help ||
+	     params.input == "" ||
+		 params.run_name == "" ||
+		 params.label_file == "" ||
+		 params.output_path == "" ||
+		 params.preprocess_schemes == "" ||
+		 params.balance_schemes == "" ||
+		 params.bayescv_iterations == "" ||
+		 params.options_toml == "" ||
+		 params.classifier == ""){
+   
 	// Invoke the help function above and exit
 		helpMessage()
 		exit 1
-		// consider adding some extra contigencies here.
-		// could validate path of all input files in list?
-		// could validate indexes for input files exist?
-		// could validate indexes for reference exist?
 
 	// if none of the above are a problem, then run the workflow
 	} else {
 		
 		// Define input channels 
-		input = Channel.fromPath("${params.input}")
-		label_file = Channel.fromPath("${params.label_path}")
+		input = Channel.fromPath(file("${params.input}"), checkIfExists: true)
+		label_file = Channel.fromPath(file("${params.label_file}"), checkIfExists: true)
+		options_toml = Channel.fromPath(file("${params.options_toml}"), checkIfExists: true)
 		preprocess_schemes = Channel.from(params.preprocess_schemes.split(","))
 		balance_schemes = Channel.from(params.balance_schemes.split(","))
 		bayescv_iterations = Channel.from(params.bayescv_iterations.split(","))
 
 		// Run process 1 example
-		processOne(params.input, preprocess_schemes, balance_schemes, bayescv_iterations)
+		processOne(input, label_file, options_toml, preprocess_schemes, balance_schemes, bayescv_iterations)
 
 	}}
 
@@ -135,7 +142,7 @@ Duration    : ${workflow.duration}
 Success     : ${workflow.success}
 workDir     : ${workflow.workDir}
 Exit status : ${workflow.exitStatus}
-outDir      : ${params.outDir}
+output_path : ${params.output_path}
 
 =======================================================================================
 	"""
