@@ -58,17 +58,32 @@ workDir     : ${workflow.workDir}
 
 def helpMessage() {
     log.info"""
-  Usage:  nextflow run main.nf --input <samples.tsv> 
+  Usage:  nextflow run main.nf \
+  				--run_name <name> \
+  				--input <preprocessed.csv> \
+				--label_file <cell_type_labels.csv> \
+				--output_path <dir>
+				--preprocess_scheme logp1,poly
+				--balance_schemes ENN,TOMEK,ADASYN,SMOTEENN,SMOTE
+				--bayescv_iterations 1,5,10,20
+				--classifier Xgboost
+				--options_toml <options.toml>
 
   Required Arguments:
+  --run_name			Run name used to label output files.
 
-  --input	Specify full path and name of sample
-		input file (tab separated).
+  --input				Preprocessed input data file from QuPath.
+  --label_file			File containing cell type labels.
+  --output_path			Path to directory to store output files.
 
-  Optional Arguments:
+  --preprocess_schemes	The schemes to use to transform the input data.
+  --balance_schemes		The schemes to use to balance the input data.
 
-  --outDir	Specify path to output directory. 
-	
+  --bayescv_iterations	Numbers of parameter settings that are sampled in Bayes Search CV.
+
+  --options_toml		TOML file containing preprocessing scheme and model classifier options.
+  --classifier			Classifier to train.
+
 """.stripIndent()
 }
 
