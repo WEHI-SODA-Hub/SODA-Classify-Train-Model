@@ -44,9 +44,16 @@ Log issues @ GITHUB REPO DOT COM
 =======================================================================================
 Workflow run parameters 
 =======================================================================================
-input       : ${params.input}
-outDir      : ${params.outDir}
-workDir     : ${workflow.workDir}
+run_name          : ${params.run_name}
+input	          : ${params.input}
+label_file        : ${params.label_file}
+output_path       : ${params.output_path}
+preprocess_schemes: ${params.preprocess_schemes}
+balance_schemes   : ${params.balance_schemes}
+bayescv_iterations: ${params.bayescv_iterations}
+options_toml      : ${params.options_toml}
+classifier        : ${params.classifier}
+workDir           : ${workflow.workDir}
 =======================================================================================
 
 """
@@ -94,32 +101,32 @@ workflow {
 // Show help message if --help is run or if any required params are not 
 // provided at runtime
 
-if ( params.help || params.input == false ){   
-// Invoke the help function above and exit
-	helpMessage()
-	exit 1
-	// consider adding some extra contigencies here.
-	// could validate path of all input files in list?
-	// could validate indexes for input files exist?
-	// could validate indexes for reference exist?
+	if ( params.help || params.input == false ){   
+	// Invoke the help function above and exit
+		helpMessage()
+		exit 1
+		// consider adding some extra contigencies here.
+		// could validate path of all input files in list?
+		// could validate indexes for input files exist?
+		// could validate indexes for reference exist?
 
-// if none of the above are a problem, then run the workflow
-} else {
-	
-	// Define input channels 
-	input = Channel.fromPath("${params.input}")
-	label_file = Channel.fromPath("${params.label_path}")
-	preprocess_schemes = Channel.from(params.preprocess_schemes.split(","))
-	balance_schemes = Channel.from(params.balance_schemes.split(","))
-	bayescv_iterations = Channel.from(params.bayescv_iterations.split(","))
+	// if none of the above are a problem, then run the workflow
+	} else {
+		
+		// Define input channels 
+		input = Channel.fromPath("${params.input}")
+		label_file = Channel.fromPath("${params.label_path}")
+		preprocess_schemes = Channel.from(params.preprocess_schemes.split(","))
+		balance_schemes = Channel.from(params.balance_schemes.split(","))
+		bayescv_iterations = Channel.from(params.bayescv_iterations.split(","))
 
-	// Run process 1 example
-	processOne(params.input, preprocess_schemes, balance_schemes, bayescv_iterations)
+		// Run process 1 example
+		processOne(params.input, preprocess_schemes, balance_schemes, bayescv_iterations)
 
-}}
+	}}
 
-workflow.onComplete {
-summary = """
+	workflow.onComplete {
+	summary = """
 =======================================================================================
 Workflow execution summary
 =======================================================================================
@@ -131,7 +138,7 @@ Exit status : ${workflow.exitStatus}
 outDir      : ${params.outDir}
 
 =======================================================================================
-  """
-println summary
+	"""
+	println summary
 
 }
