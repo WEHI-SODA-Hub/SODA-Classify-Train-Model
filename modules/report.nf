@@ -7,7 +7,7 @@ process REPORT {
 
     memory "4 GB"
     cpus 1
-    conda "${projectDir}/environment.yml"
+    conda "${projectDir}/envs/environment-report.yml"
     time "30min"
     label "report"
     publishDir "${params.output_path}", mode: 'copy'
@@ -18,7 +18,7 @@ process REPORT {
     path toml
 
     output:
-    path "assess.html"
+    path "${params.run_name}-assess.html"
 
     script:
     """
@@ -27,9 +27,9 @@ process REPORT {
         --output-dir . \\
         --options-toml ${toml} \\
         -d \\
-        ${input_data} > assess.qmd
+        ${input_data} > "${params.run_name}-assess.qmd"
     
-    quarto render assess.qmd --to html
+    quarto render "${params.run_name}-assess.qmd" --to html
     """
 
 }

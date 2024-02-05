@@ -7,7 +7,7 @@ process TRAIN {
 
 	memory "100 GB"
 	cpus 56
-	conda "${projectDir}/environment.yml"
+	conda "${projectDir}/envs/environment.yml"
 	time "24h"
 	label "train"
 
@@ -24,7 +24,7 @@ process TRAIN {
 	
 	script:
 	"""
-	python3 ${projectDir}/src/train_classifier.py \\
+	python3 -u ${projectDir}/src/train_classifier.py \\
 		--name ${params.run_name}-${preprocess_scheme}-${balance_scheme}-${bayescv_iteration} \\
 		--input ${input} \\
 		--labels ${label_file} \\
@@ -34,5 +34,5 @@ process TRAIN {
 		--bayescv-iterations ${bayescv_iteration} \\
 		--options ${options_toml} \\
 		--classifier ${params.classifier}
-	"""
+	""".stripIndent()
 }
