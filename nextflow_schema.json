@@ -70,6 +70,18 @@
       "description": "A comma-delimited list of the number of BayesCV itations to use. E.g., \"5,10\".",
       "default": "1,3,5,10"
     },
+    "options_toml": {
+      "type": "string",
+      "format": "file-path",
+      "description": "Path to file containing TOML model training options.",
+      "exists": true
+    },
+    "decoder": {
+      "type": "string",
+      "format": "file-path",
+      "descriptions": "Path to file containing JSON decoder.",
+      "exists": true
+    },
     "classifier": {
       "type": "string",
       "description": "Name of the classifier to train.",
