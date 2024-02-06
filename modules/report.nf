@@ -13,12 +13,10 @@ process REPORT {
     publishDir "${params.output_path}", mode: 'copy'
 
     input:
-    path input_data
-    path decoder
-    path toml
+    tuple path(input_data), path(decoder), path(toml)
 
     output:
-    path "${params.run_name}-assess.html"
+    path "${input_data}-assess.html"
 
     script:
     """
@@ -27,9 +25,9 @@ process REPORT {
         --output-dir . \\
         --options-toml ${toml} \\
         -d \\
-        ${input_data} > "${params.run_name}-assess.qmd"
+        ${input_data} > "${input_data}-assess.qmd"
     
-    quarto render "${params.run_name}-assess.qmd" --to html
+    quarto render "${input_data}-assess.qmd" --to html
     """
 
 }
