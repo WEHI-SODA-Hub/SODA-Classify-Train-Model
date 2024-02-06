@@ -109,9 +109,10 @@ workflow {
 
 		report_ch = REPORT(results_ch.collect(), decoder, options_toml)
 
-	}}
+	}
+}
 
-	workflow.onComplete {
+workflow.onComplete {
 	summary = """
 =======================================================================================
 Workflow execution summary

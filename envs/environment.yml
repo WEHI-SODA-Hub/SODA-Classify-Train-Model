@@ -1,7 +1,6 @@
 name: xgboost-cell-classification
 channels:
 - conda-forge
-- defaults
 dependencies:
 - xgboost=1.6.2
 - scikit-learn=1.1.1
@@ -13,5 +12,3 @@ dependencies:
 - seaborn=0.11.2
 - pytest
 - numpy<1.20
-- quarto
-- tabulate
