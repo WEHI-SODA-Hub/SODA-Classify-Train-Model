@@ -32,7 +32,10 @@ class ClassifierInitialiser:
             split_random_state = options["SPLIT_RANDOM_STATE"]
             test_size = options["TEST_SIZE"]
 
-            n_jobs = bayescv_options["N_JOBS"]
+            if classifier_scheme == "Xgboost-gpu":
+                n_jobs = 2 # 2 for higher GPU utilization on A100s
+            else:
+                n_jobs = bayescv_options["N_JOBS"]
             n_iter = bayescv_options["ITERATIONS"]
             scoring = bayescv_options["SCORING"]
         except:
@@ -145,7 +148,7 @@ class XgboostApplierGPU:
         self.search_space = SEARCH_SPACE
         try:
             self.model = xgb.XGBClassifier(
-                    n_jobs = 2,
+                    n_jobs = args["N_JOBS_MODEL"],
                     objective = args["OBJECTIVE_FUNC"],
                     tree_method= "gpu_hist"
                 )
