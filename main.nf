@@ -53,20 +53,18 @@ def helpMessage() {
 		--bayescv_iterations 1,5,10,20
 		--classifier Xgboost
 		--options_toml <options.toml>
+		--decoder <decoder.json>
 
   Required Arguments:
   --run_name			Run name used to label output files.
-
   --input				Preprocessed input data file from QuPath.
   --label_file			File containing cell type labels.
   --output_path			Path to directory to store output files.
-
   --preprocess_schemes	The schemes to use to transform the input data.
   --balance_schemes		The schemes to use to balance the input data.
-
   --bayescv_iterations	Numbers of parameter settings that are sampled in Bayes Search CV.
-
   --options_toml		TOML file containing preprocessing scheme and model classifier options.
+  --decoder             JSON file containing the decoder for the predicted cell types.
   --classifier			Classifier to train.
 
 """.stripIndent()
