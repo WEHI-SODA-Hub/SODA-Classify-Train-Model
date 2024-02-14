@@ -12,6 +12,7 @@ process TRAIN {
 	label "train"
 
 	input:
+	path script
 	path input
 	path label_file
 	path options_toml
@@ -24,7 +25,7 @@ process TRAIN {
 	
 	script:
 	"""
-	python3 -u ${projectDir}/src/train_classifier.py \\
+	python3 -u ${script} \\
 		--name ${params.run_name}-${preprocess_scheme}-${balance_scheme}-${bayescv_iteration} \\
 		--input ${input} \\
 		--labels ${label_file} \\
