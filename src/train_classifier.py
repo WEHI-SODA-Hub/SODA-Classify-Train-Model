@@ -116,7 +116,8 @@ if __name__ == "__main__":
         "--preprocess-scheme",
         "-s",
         help="The scheme to use to transform the input data.",
-        choices=["logp1", "poly"],
+        choices=["null", "logp1", "poly"],
+        default="null"
     )
     parser.add_argument(
         "--balance-scheme",
