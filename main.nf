@@ -99,7 +99,7 @@ workflow {
 		preprocess_schemes = Channel.from(params.preprocess_schemes.split(","))
 		balance_schemes = Channel.from(params.balance_schemes.split(","))
 		bayescv_iterations = Channel.from((params.bayescv_iterations+"").split(","))
-		script = Channel.fromPath(file("${projectDir}/src/train_classifier.py", checkIfExists: true))
+		script = Channel.fromPath(file("${projectDir}/scripts/train_classifier.py", checkIfExists: true))
 
 		// Run training process
 		results_ch = TRAIN(script, input, label_file, options_toml, preprocess_schemes, balance_schemes, bayescv_iterations)
