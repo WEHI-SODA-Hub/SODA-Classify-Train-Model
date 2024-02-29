@@ -123,7 +123,7 @@ using the Python script directly, the report will be printed to the terminal in 
 
 The models themselves are stored as pickle files and the directory containing the models will be
 recorded in the report. The model will be saved as `final_model.sav` e.g., 
-`<process directory>/<name>-logp1-ADASYN-1/final_model.sav`.
+`<process directory>/<name>-logp1-ADASYN-1/final_model.json`.
 
 ## Credits 
 

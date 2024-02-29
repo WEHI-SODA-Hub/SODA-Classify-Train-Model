@@ -80,8 +80,8 @@ def train(
     # Sav ethe final best model
     print("INFO: Save final model")
     model = classifier_applier.get_final_classifier()
-    filename = os.path.join(full_output_directory, "final_model.sav")
-    pickle.dump(model, open(filename, "wb"))
+    filename = os.path.join(full_output_directory, "final_model.json")
+    model.save_model(filename)
     print("INFO: Finished")
 
 
