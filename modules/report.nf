@@ -33,7 +33,7 @@ process REPORT {
         for b_iter in $unique_bayescv_iterations;
         do
             reportname="!{params.run_name}-ALL_BALANCE_SCHEMES-${pp_scheme}-${b_iter}-assess"
-            python3 !{projectDir}/src/create-qmd.py \\
+            python3 !{projectDir}/scripts/create-qmd.py \\
                 --decoder !{decoder} \\
                 --output-dir . \\
                 --options-toml !{toml} \\
@@ -50,7 +50,7 @@ process REPORT {
         for b_iter in $unique_bayescv_iterations;
         do
             reportname="!{params.run_name}-ALL_PREPROCESSING_SCHEMES-${b_scheme}-${b_iter}-assess"
-            python3 !{projectDir}/src/create-qmd.py \\
+            python3 !{projectDir}/scripts/create-qmd.py \\
                 --decoder !{decoder} \\
                 --output-dir . \\
                 --options-toml !{toml} \\
@@ -67,7 +67,7 @@ process REPORT {
         for pp_scheme in $unique_preprocessing_schemes;
         do
             reportname="!{params.run_name}-ALL_BAYESCV_ITERATIONS-${b_scheme}-${pp_scheme}-assess"
-            python3 !{projectDir}/src/create-qmd.py \\
+            python3 !{projectDir}/scripts/create-qmd.py \\
                 --decoder !{decoder} \\
                 --output-dir . \\
                 --options-toml !{toml} \\
