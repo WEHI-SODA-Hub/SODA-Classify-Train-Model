@@ -139,26 +139,18 @@ SEARCH_SPACE = {
 class XgboostApplier:
     def __init__(self, args: Dict) -> None:
         self.search_space = SEARCH_SPACE
-        try:
-            self.model = xgb.XGBClassifier(
-                n_jobs=args["N_JOBS_MODEL"],
-                objective=args["OBJECTIVE_FUNC"],
-                tree_method="hist",
-            )
-        except:
-            # TODO: Raise an error
-            pass
+        self.model = xgb.XGBClassifier(
+            n_jobs=args["N_JOBS_MODEL"],
+            objective=args["OBJECTIVE_FUNC"],
+            tree_method="hist",
+        )
 
 
 class XgboostApplierGPU:
     def __init__(self, args: Dict) -> None:
         self.search_space = SEARCH_SPACE
-        try:
-            self.model = xgb.XGBClassifier(
-                n_jobs=args["N_JOBS_MODEL"],
-                objective=args["OBJECTIVE_FUNC"],
-                tree_method="gpu_hist",
-            )
-        except:
-            # TODO: Raise an error
-            pass
+        self.model = xgb.XGBClassifier(
+            n_jobs=args["N_JOBS_MODEL"],
+            objective=args["OBJECTIVE_FUNC"],
+            tree_method="gpu_hist",
+        )
