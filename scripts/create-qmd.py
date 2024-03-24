@@ -206,6 +206,92 @@ def process_input(
         overall_score_df.to_markdown(),
     )
 
+class mibi_train_reporter:
+
+    def __init__(self, combinations, decoder_path, output_dir=".", debug=False):
+
+        self.decoder_path = decoder_path
+        self.output_path = output_dir
+        self.debug = debug
+
+        self.sections = []
+
+        self.text_tables = {}
+
+        self.header = f"""---
+title: MIBI Assess Predictions Report
+author: {getpass.getuser()}
+date: now
+format:
+  html:
+    toc: true
+    toc-location: left
+    code-fold: true
+    page-layout: full
+    embed-resources: true
+---
+
+## Poly Preprocess combinations
+
+These are the combinations you've provided to be used with the `poly` preprocess scheme.
+
+{tabulate.tabulate(combinations, combinations.keys(), tablefmt="github")}"""
+        
+        self.section_body = """## {label}
+
+**Input/output Folder:**
+
+```
+{input_path}
+```
+
+**Decoder:**
+
+```
+{decoder_path}
+```
+
+![Confusion matrices for {label}]({img_path}){{fig-alt="Confusion matrices for {label} data. Left: absolute, right: normalised."}}
+
+::: {{#tbl-panel layout-ncol=2}}
+{classification_report_table}
+
+: Per cell type scores {{#tbl-first}}
+
+{overall_scores_table}
+
+: Overall scores {{#tbl-second}}
+
+Scoring tables for {label}
+:::
+"""
+
+    def add_section(self, input_path):
+
+        label = os.path.basename(input_path.rstrip("/"))
+
+        img_path, classification_report_txt, overall_scores_txt = process_input(
+            label, input_path, self.decoder_path, self.output_path, self.debug
+        )
+
+        mapping = {
+            "label": label,
+            "input_path": os.path.realpath(input_path),
+            "decoder_path": os.path.realpath(self.decoder_path),
+            "img_path": img_path,
+            "classification_report_table": classification_report_txt,
+            "overall_scores_table": overall_scores_txt
+        }
+
+        self.sections.append(self.section_body.format_map(mapping))
+
+    def print_report(self):
+
+        print(self.header, sep="\n\n")
+
+        for s in self.sections:
+            print(s, sep="\n\n")
+
 
 def print_header() -> None:
     """prints the header for the final markdown file"""
@@ -305,19 +391,24 @@ def main(
         )
         sys.exit(1)
 
-    print(
-        f"""
-## Poly Preprocess combinations
+    reporter = mibi_train_reporter(combinations, decoder_path, output_path, debug)
 
-These are the combinations you've provided to be used with the `poly` preprocess scheme.
+#     print(
+#         f"""
+# ## Poly Preprocess combinations
 
-{tabulate.tabulate(combinations, combinations.keys(), tablefmt="github")}
+# These are the combinations you've provided to be used with the `poly` preprocess scheme.
 
-"""
-    )
+# {tabulate.tabulate(combinations, combinations.keys(), tablefmt="github")}
+
+# """
+    # )
 
     for d in input_dirs:
-        print_section(d, decoder_path, output_path, debug)
+        # print_section(d, decoder_path, output_path, debug)
+        reporter.add_section(d)
+
+    reporter.print_report()
 
 
 if __name__ == "__main__":
