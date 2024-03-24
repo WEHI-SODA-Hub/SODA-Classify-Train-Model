@@ -202,8 +202,8 @@ def process_input(
 
     return (
         output_image_path,
-        classification_report_df.to_markdown(),
-        overall_score_df.to_markdown(),
+        classification_report_df,
+        overall_score_df,
     )
 
 class mibi_train_reporter:
@@ -270,7 +270,7 @@ Scoring tables for {label}
 
         label = os.path.basename(input_path.rstrip("/"))
 
-        img_path, classification_report_txt, overall_scores_txt = process_input(
+        img_path, classification_report_df, overall_scores_df = process_input(
             label, input_path, self.decoder_path, self.output_path, self.debug
         )
 
@@ -279,8 +279,8 @@ Scoring tables for {label}
             "input_path": os.path.realpath(input_path),
             "decoder_path": os.path.realpath(self.decoder_path),
             "img_path": img_path,
-            "classification_report_table": classification_report_txt,
-            "overall_scores_table": overall_scores_txt
+            "classification_report_table": classification_report_df.to_markdown(),
+            "overall_scores_table": overall_scores_df.to_markdown()
         }
 
         self.sections.append(self.section_body.format_map(mapping))
@@ -291,72 +291,6 @@ Scoring tables for {label}
 
         for s in self.sections:
             print(s, sep="\n\n")
-
-
-def print_header() -> None:
-    """prints the header for the final markdown file"""
-    print(
-        f"""---
-title: MIBI Assess Predictions Report
-author: {getpass.getuser()}
-date: now
-format:
-  html:
-    toc: true
-    toc-location: left
-    code-fold: true
-    page-layout: full
-    embed-resources: true
----
-
-"""
-    )
-
-
-def print_section(
-    input_path: str, decoder_path: str, output_path: str, debug: bool
-) -> None:
-    label = os.path.basename(input_path.rstrip("/"))
-    """prints markdown section related to the supplied results
-    
-    Args:
-        input_path: path to the directory containing training outputs
-        decoder_path: path to the JSON decoder file
-        output_path: path to the directory to store generated images"""
-
-    print(
-        f"""## {label}
-
-**Input/output Folder:**
-
-```
-{os.path.realpath(input_path)}
-```
-
-**Decoder:**
-
-```
-{os.path.realpath(decoder_path)}
-```
-"""
-    )
-
-    img_path, classification_report_txt, overall_scores_txt = process_input(
-        label, input_path, decoder_path, output_path, debug
-    )
-
-    print(
-        f"""
-![Confusion matrices for {label}]({img_path}){{fig-alt="Confusion matrices for {label} data. Left: absolute, right: normalised."}}
-"""
-    )
-
-    print("::: {#tbl-panel layout-ncol=2}")
-    print(classification_report_txt + "\n\n: Per cell type scores {{#tbl-first}}")
-    print()
-    print(overall_scores_txt + "\n\n: Overall scores {{#tbl-second}}")
-    print()
-    print(f"Scoring tables for {label}\n:::")
 
 
 def main(
@@ -373,8 +307,6 @@ def main(
         options_toml: path to toml with preprocess options. used to print the poly combinations.
         decoder_path: path to the JSON decoder file
         output_path: path to the directory to store generated images"""
-
-    print_header()
 
     try:
         options = toml.load(options_toml)
@@ -393,19 +325,7 @@ def main(
 
     reporter = mibi_train_reporter(combinations, decoder_path, output_path, debug)
 
-#     print(
-#         f"""
-# ## Poly Preprocess combinations
-
-# These are the combinations you've provided to be used with the `poly` preprocess scheme.
-
-# {tabulate.tabulate(combinations, combinations.keys(), tablefmt="github")}
-
-# """
-    # )
-
     for d in input_dirs:
-        # print_section(d, decoder_path, output_path, debug)
         reporter.add_section(d)
 
     reporter.print_report()
