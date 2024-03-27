@@ -114,6 +114,23 @@ optional arguments:
   --debug, -d           Turns on debug mode, which writes results to csv for validation.
 ```
 
+### Training options file
+
+As part of the training, an options TOML must be supplied. This file exposes some of the more
+detailed model training configuration options. An example of a working options TOML is in
+`options-example.toml`. When training a model to predict cell type, only the
+`[preprocess_options.combinations]` need to be modified.
+
+#### Predicting functional markers
+
+Ensure that your data has been preprocessed using the `MIBI-preprocess-data-FM` pipeline. When
+supplying the options TOML for training, select `options-example-FM.toml` instead. This TOML file
+differs by:
+
+* changing `OBJECTIVE_FUNC` from `multi:softprob` to `binary:logistic`,
+* changing `SCORING` from `balanced_accuracy` to `roc_auc`, and
+* removing any `preprocess_options.combinations`.
+
 ## Pipeline Output
 
 The pipeline will produce a collection of HTML reports which contain scoring and accuracy
