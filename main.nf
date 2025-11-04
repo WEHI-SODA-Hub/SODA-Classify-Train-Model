@@ -14,7 +14,7 @@ log.info """\
 MIBI Training Pipeline - nf 
 =======================================================================================
 
-Created by Clair Marceux, WEHI
+Created by Claire Marceux, WEHI
 
 Find documentation and more info @ https://github.com/BioimageAnalysisCoreWEHI/MIBI-train-model/
 

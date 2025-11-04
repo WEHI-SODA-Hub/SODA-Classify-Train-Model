@@ -6,7 +6,20 @@ instructions.
 
 ## Introduction
 
-This pipeline uses BayesCV to tune the training of an XGBoost model. The parameters tuned are:
+* This pipeline uses BayesCV to tune the training of an XGBoost model. The parameters tuned are:
+  * "eta": Real(1e-8, 1, "log-uniform"),
+  * "reg_alpha": Real(1e-8, 1.0, "log-uniform"),
+  * "reg_lambda": Real(1e-8, 1000, "log-uniform"),
+  * "max_depth": Integer(0, 50, "uniform"),
+  * "n_estimators": Integer(10, 300, "uniform"),
+  * "learning_rate": Real(1e-8, 1.0, "log-uniform"),
+  * "min_child_weight": Integer(0, 10, "uniform"),
+  * "max_delta_step": Integer(1, 100, "uniform"),
+  * "subsample": Real(1e-8, 1.0, "uniform"),
+  * "colsample_bytree": Real(1e-8, 1.0, "uniform"),
+  * "colsample_bylevel": (1e-8, 1.0, "uniform"),
+  * "gamma": Real(1e-8, 1.0, "log-uniform"),
+  * "min_child_weight": Integer(0, 5, "uniform")
 
 * The preprocessing scheme (i.e., how the data is preprocessed before being fed into XGBoost). Can be:
 	* `null`: no pre-processing - train the model on the data as-is.
@@ -166,7 +179,7 @@ recorded in the report. The model will be saved as `bayes_cv_model.sav` e.g.,
 ## Credits 
 
 The core functionality of the MIBI pipeline was developed by Kenta Yotoke (@yokotenka) under the supervision of Claire Marceaux 
-(@ClaireMarceaux). The pipeline was adapted to Nextflow by Edward Yang (@edoyango).
+(@ClaireMarceaux). The pipeline was adapted to Nextflow by Edward Yang (@edoyango) and maintained by Michael Mckay (@mikemcka) and Michael Milton (@multimeric).
 
 ## Citation
 
