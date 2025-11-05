@@ -83,24 +83,35 @@ def train(
 
     # get predictions
     print("INFO: Save the predictions")
+    
+    # Get prediction dataframes
+    y_pred_df = classifier_applier.get_prediction_df()
+    y_train_df = classifier_applier.y_train_orig
+    y_test_df = classifier_applier.y_test
+    
     if use_parquet:
-        classifier_applier.get_prediction_df().to_parquet(
+        # Parquet requires string column names - convert all column names to strings
+        y_pred_df.columns = y_pred_df.columns.astype(str)
+        y_train_df.columns = y_train_df.columns.astype(str)
+        y_test_df.columns = y_test_df.columns.astype(str)
+        
+        y_pred_df.to_parquet(
             os.path.join(full_output_directory, "y_predicted.parquet"), index=False
         )
-        classifier_applier.y_train_orig.to_parquet(
+        y_train_df.to_parquet(
             os.path.join(full_output_directory, "y_train.parquet"), index=False
         )
-        classifier_applier.y_test.to_parquet(
+        y_test_df.to_parquet(
             os.path.join(full_output_directory, "y_test.parquet"), index=False
         )
     else:
-        classifier_applier.get_prediction_df().to_csv(
+        y_pred_df.to_csv(
             os.path.join(full_output_directory, "y_predicted.csv"), index=False
         )
-        classifier_applier.y_train_orig.to_csv(
+        y_train_df.to_csv(
             os.path.join(full_output_directory, "y_train.csv"), index=False
         )
-        classifier_applier.y_test.to_csv(
+        y_test_df.to_csv(
             os.path.join(full_output_directory, "y_test.csv"), index=False
         )
 
