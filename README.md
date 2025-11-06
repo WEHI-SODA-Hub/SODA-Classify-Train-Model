@@ -47,8 +47,8 @@ Parameters:
 
   Required Arguments:
   --run_name			Run name used to label output files.
-  --input				Preprocessed input data file from QuPath.
-  --label_file			File containing cell type labels.
+  --input				Preprocessed input data file from QuPath (.csv or .parquet).
+  --label_file			File containing cell type labels (.csv or .parquet).
   --output_path			Path to directory to store output files.
   --preprocess_schemes	The schemes to use to transform the input data.
   --balance_schemes		The schemes to use to balance the input data.
@@ -56,6 +56,9 @@ Parameters:
   --options_toml		TOML file containing preprocessing scheme and model classifier options.
   --decoder             JSON file containing the decoder for the predicted cell types.
   --classifier			Classifier to train. Can be XGBoost or XGBoost-gpu.
+
+  Note: The pipeline automatically detects whether input files are CSV or Parquet format.
+        Prediction output files (y_predicted, y_test, y_train) are always saved as CSV.
 ```
 
 If you wish to use the GPU-accelerated version on WEHI's HPC, run the pipeline with the additional 
@@ -83,9 +86,9 @@ optional arguments:
   -h, --help            show this help message and exit
   --name NAME, -n NAME  Run name used to label output files.
   --input INPUT, -i INPUT
-                        Preprocessed input data file from QuPath.
+                        Preprocessed input data file from QuPath (.csv or .parquet).
   --labels LABELS, -l LABELS
-                        File containing cell type labels.
+                        File containing cell type labels (.csv or .parquet).
   --output-path OUTPUT_PATH, -o OUTPUT_PATH
                         Path to directory to store output files.
   --preprocess-scheme {null,logp1,poly}, -s {null,logp1,poly}
@@ -105,6 +108,9 @@ optional arguments:
                         Saves the preprocessed data.
   --config CONFIG, -j CONFIG
                         Path to JSON config file.
+
+Note: The script automatically detects input file format (.csv or .parquet) by extension.
+      Prediction outputs are always saved as CSV for compatibility with reporting tools.
 ```
 
 The script used to assess the results usage:
@@ -133,6 +139,7 @@ After preprocessing the test data as per [the preprocessing example](https://git
 To train/hyperparameter tune the model:
 
 ```
+# Using CSV input (default preprocessing output)
 nextflow run main.nf \
     --run_name test-train \
     --input /tmp/mibi-test-run-output/test_preprocessed_input_data.csv \
@@ -144,9 +151,24 @@ nextflow run main.nf \
     --options_toml options-example.toml \
     --decoder /tmp/mibi-test-run-output/test_decoder.json \
     -profile wehi_gpu # For running on WEHI's GPUs, which is much faster than CPUs.
+
+# Using Parquet input (if preprocessing output was in Parquet format)
+nextflow run main.nf \
+    --run_name test-train-parquet \
+    --input /tmp/mibi-test-run-output/test_preprocessed_input_data.parquet \
+    --label_file /tmp/mibi-test-run-output/test_cell_type_labels.parquet \
+    --output_path /tmp/mibi-test-run-output/ \
+    --preprocess_schemes null,poly \
+    --balance_schemes TOMEK \
+    --bayescv_iterations 1,3 \
+    --options_toml options-example.toml \
+    --decoder /tmp/mibi-test-run-output/test_decoder.json \
+    -profile wehi_gpu
 ```
 
 This will reuse the output folder used in the preprocessing example.
+
+**Note:** The pipeline automatically detects the input file format based on the file extension (`.csv` or `.parquet`). Parquet input files provide faster loading times for large datasets.
 
 ### Training options file
 
