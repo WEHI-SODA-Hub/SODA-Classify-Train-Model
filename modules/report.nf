@@ -7,7 +7,6 @@ process REPORT {
 
     memory "4 GB"
     cpus 1
-    conda "${projectDir}/envs/environment.yml"
     time "30min"
     label "report"
     publishDir "${params.output_path}", mode: 'copy'
